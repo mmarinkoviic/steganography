@@ -40,7 +40,6 @@
           decrypted-bytes (cryptol/decrypt encrypted-bytes key-bytes iv-bytes)]
       (codecs/bytes->str decrypted-bytes))
     (catch Exception e
-      (when (.getMessage e)
-        (if (.getMessage e)
-          (.contains (.getMessage e) "Message seems corrupt or manipulated")
-          false)))))
+      (if (.contains (.getMessage e) "Message seems corrupt or manipulated")
+        false
+        (throw e)))))
