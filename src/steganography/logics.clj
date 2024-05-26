@@ -7,10 +7,11 @@
   "Generates the binary representation of given number."
   [n]
   (reverse (map #(bit-and (bit-shift-right n %) 1) (range 8))))
+
 (defn numb
   "Converts a binary representation of number into a number."
   [bits]
-  (reduce (fn [acc bit] (+ (* acc 2) (if (= bit 1) 1 0))) 0 (map int bits)))
+  (reduce (fn [acc bit] (+ (* acc 2) bit)) 0 (map int bits)))
 
 (defn set-last-bit
   "Sets the last bit in a list of bits with given one."
@@ -18,7 +19,7 @@
   (concat (take 7 list-of-bits) [new-bit]))
 
 (defn string-to-bits
-  "Encrypts and converts a string into a binary representation"
+  "Encrypts and converts a string into a binary representation."
   [key message]
   (let [encrypted-message (str (crypto/encrypt-message key message) "@end;")
         encrypted-bytes (.getBytes encrypted-message "UTF-8")]
@@ -81,31 +82,27 @@
           (let [char (to-char bytes)]
             (if (or (= char \;) (= char \:))
               (let [decrypted-msg (try
-                                    (crypto/decrypt-message key (subs msg 0 (- (count msg) 5)))
+                                    (crypto/decrypt-message key (subs msg 0 (- (count msg) 4)))
                                     (catch Exception e
-                                      (println "Error during decryption:" (.getMessage e))
+                                      (println "Error during decryption.")
                                       ""))]
-                (if (.endsWith decrypted-msg "@end")
-                  (subs decrypted-msg 0 (- (count decrypted-msg) 5))
-                  (do
-                    (println "Decryption failed or end tag not found.")
-                    "")))
+                decrypted-msg)
               (recur (rest bytes) (str msg char))))
           "")))
     (catch Exception e
-      (println "Error during decoding:" (.getMessage e))
+      (println "Error during decoding.")
       "")))
 
 (defn contains-message?
   "Detects if there is a message in the image file."
   [key file-path]
   (let [decoded-msg (decode key file-path)]
-    (if (and decoded-msg (.endsWith decoded-msg "@end"))
+    (if (and decoded-msg (not= decoded-msg ""))
       decoded-msg
       nil)))
 
 (defn encode
-  "Encodes a secret message into the image file after encrypting it"
+  "Encodes a secret message into the image file after encrypting it."
   [file-path file-name key message]
   (try
     (let [image (image-utils/load-image file-path)
@@ -120,18 +117,23 @@
         (image-utils/save-image image file-name)
         (println "Message encoded successfully.")))
     (catch Exception e
-      (println "Error during encoding:" (.getMessage e)))))
+      (println "Error during encoding." ))))
 
 (defn compare-image
   "Checks to see if the image structure has changed."
-  [image1 image2]
-  (let [width (.getWidth image1)
-        height (.getHeight image1)
-        equal (ref true)]
-    (doseq [x (range width)
-            y (range height)]
-      (if-not (= (bit-and (.getRGB image1 x y) 0xFEFFFEFF)
-                 (bit-and (.getRGB image2 x y) 0xFEFFFEFF))
-        (dosync (ref-set equal false))))
-    @equal))
-
+  [path-image1 path-image2]
+  (try
+    (let [image1 (image-utils/load-image path-image1)
+          image2 (image-utils/load-image path-image2)
+          width (.getWidth image1)
+          height (.getHeight image1)
+          equal (ref true)]
+      (doseq [x (range width)
+              y (range height)]
+        (if-not (= (bit-and (.getRGB image1 x y) 0xFEFFFEFF)
+                   (bit-and (.getRGB image2 x y) 0xFEFFFEFF))
+          (dosync (ref-set equal false))))
+      @equal)
+    (catch Exception e
+      (println "An error occurred while comparing images:")
+      nil)))

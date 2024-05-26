@@ -1,5 +1,5 @@
 (ns steganography.crypto
-  (:require [buddy.core.crypto :as cryptol]
+  (:require [buddy.core.crypto :as cryptology]
             [buddy.core.codecs :as codecs]
             [buddy.core.hash :as hash]
             ))
@@ -23,7 +23,7 @@
         message-bytes (.getBytes message "UTF-8")
         iv (generate-iv)
         iv-array (byte-array iv)
-        encrypted-bytes (cryptol/encrypt message-bytes key-bytes iv-array)
+        encrypted-bytes (cryptology/encrypt message-bytes key-bytes iv-array)
         iv-hex (apply str (map #(format "%02X" %) iv-array))
         encrypted-hex (apply str (map #(format "%02X" %) encrypted-bytes))]
     (str iv-hex encrypted-hex)))
@@ -37,7 +37,7 @@
           ciphertext-hex (subs encrypted-message 32)
           iv-bytes (codecs/hex->bytes iv-hex)
           encrypted-bytes (codecs/hex->bytes ciphertext-hex)
-          decrypted-bytes (cryptol/decrypt encrypted-bytes key-bytes iv-bytes)]
+          decrypted-bytes (cryptology/decrypt encrypted-bytes key-bytes iv-bytes)]
       (codecs/bytes->str decrypted-bytes))
     (catch Exception e
       (if (.contains (.getMessage e) "Message seems corrupt or manipulated")
