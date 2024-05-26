@@ -1,22 +1,21 @@
-# steganography
+# Steganography
 
-A Clojure library designed to ... well, that part is up to you.
+This project is a tool for practicing steganography and cryptography. Steganography is the art of hiding secret messages within ordinary files, like images. It's a bit like writing an invisible note on the back of a photo!
 
-## Usage
+With this Clojure-based application, you can encode messages into image files using advanced cryptographic techniques, ensuring the security and confidentiality of your hidden information. Conversely, you can decode these messages back into their original form when needed.
 
-FIXME
+Additionally, it provides functionality to compare two images, allowing you to verify the success of steganography operations and determine if a hidden message exists within an image, even in the absence of a decryption key.
 
-## License
+The project, being a console application, lays the groundwork for future expansion and enhancement.
 
-Copyright © 2024 FIXME
 
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0.
+##The project consists of two main parts:
 
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
+Logic: This contains all the basic functions for encoding, decoding, and comparing images.
+Console Application: The user interface enabling users to encode, decode, and compare images.
+
+##Features
+
+Encoding Message into Image: Allows the user to encode a secret message into an image.
+Decoding Message from Image: Extracts the secret message from an image.
+Checking Image Equality: Compares two images and informs the user whether they are the same or not.
