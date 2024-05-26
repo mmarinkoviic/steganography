@@ -11,11 +11,17 @@ The project, being a console application, lays the groundwork for future expansi
 
 ##The project consists of two main parts:
 
+
 Logic: This contains all the basic functions for encoding, decoding, and comparing images.
+
 Console Application: The user interface enabling users to encode, decode, and compare images.
+
 
 ##Features
 
+
 Encoding Message into Image: Allows the user to encode a secret message into an image.
+
 Decoding Message from Image: Extracts the secret message from an image.
+
 Checking Image Equality: Compares two images and informs the user whether they are the same or not.
